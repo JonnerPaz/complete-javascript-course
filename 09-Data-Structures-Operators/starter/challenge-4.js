@@ -29,15 +29,30 @@ Afterwards, test with your own test data!
 GOOD LUCK 😀
 */
 
-function snakeToCamelCase(word) {
-  const [first, second] = word.toLowerCase().split('_');
-  const upperCase = second.replace(second[0], second[0].toUpperCase());
-  console.log(first + upperCase);
-}
+// Setting up variables
+document.body.append(document.createElement('textarea'));
+document.body.append(document.createElement('button'));
+const btn = document.querySelector('button');
+const words = [];
 
-const acc = '✅';
-console.log(`${snakeToCamelCase('underscore_case')},${acc}`);
-console.log(`${snakeToCamelCase('first_name')}, ${acc.repeat(2)}`);
-console.log(`${snakeToCamelCase('Some_Variable')}, ${acc.repeat(3)}`);
-console.log(`${snakeToCamelCase('calculate_AGE')}, ${acc.repeat(4)}`);
-console.log(`${snakeToCamelCase('delayed_departure')}, ${acc.repeat(5)}`);
+btn.addEventListener('click', () => {
+  const text = document.querySelector('textarea').value;
+  words.push(...text.split('\n'));
+  for (const [i, el] of words.entries()) {
+    const [first, second] = el.toLowerCase().trim().split('_');
+    const upperCase = second.replace(second[0], second[0].toUpperCase());
+    const output = `${first}${upperCase}`;
+    console.log(
+      `${output.padEnd(20)}${'✅'.repeat(i + 1)}`
+      // Other way to do the same
+      // `${output.padEnd(20)}${'✅'.padEnd(words.indexOf(el) + 1, '✅')}`
+    );
+  }
+});
+
+// Input
+document.querySelector('textarea').value = `underscore_case
+ first_name
+Some_Variable 
+  calculate_AGE
+delayed_departure`;
