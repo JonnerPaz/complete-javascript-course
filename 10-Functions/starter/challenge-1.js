@@ -55,7 +55,7 @@ const poll = {
     this.displayResults(this.answers);
   },
   displayResults(type) {
-    if (typeof type === 'object') {
+    if (Array.isArray(type)) {
       console.log(type);
     } else if (typeof type === 'string') {
       // If type is 'string', display a string like "Poll results are 13, 2, 4, 1".
