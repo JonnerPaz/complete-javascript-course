@@ -37,29 +37,23 @@ const poll = {
   // This generates [0, 0, 0, 0]. More in the next section 😃
   answers: new Array(4).fill(0),
   registerNewAnswer() {
-    const question = Number(
-      prompt(`
-        What is your favourite programming language?
-        0: JavaScript
-        1: Python
-        2: Rust
-        3: C++
-        (Write option number)
-`)
+    const userAnswer = Number(
+      prompt(`${this.question}\n${this.options.join('\n')}`)
     );
-    if (question === 0 || question === 1 || question === 2 || question === 3) {
-      this.answers[question]++;
+    console.log(userAnswer);
+    if (typeof userAnswer === 'number' && userAnswer <= this.options.length) {
+      this.answers[userAnswer]++;
     } else {
       console.log('wtf bro');
     }
     this.displayResults(this.answers);
   },
   displayResults(type) {
-    if (typeof type === 'object') {
+    if (Array.isArray(type)) {
       console.log(type);
     } else if (typeof type === 'string') {
       // If type is 'string', display a string like "Poll results are 13, 2, 4, 1".
-      console.log(`Poll results are ${type.split(' ').join(', ')}`);
+      console.log(`Poll results are ${this.answers.join(', ')}`);
     }
   },
 };
@@ -70,3 +64,6 @@ const registerBtnAnswer = poll.registerNewAnswer.bind(poll);
 pollBtn.addEventListener('click', registerBtnAnswer);
 // 3. Create a method 'displayResults' which displays the poll results. The method takes a string as an input (called 'type'), which can be either 'string' or 'array'. If type is 'array', simply display the results array as it is, using console.log(). This should be the default option. If type is 'string', display a string like "Poll results are 13, 2, 4, 1".
 const results = poll.displayResults;
+
+results([5, 2, 3]);
+results([1, 5, 3, 9, 6, 1]);
