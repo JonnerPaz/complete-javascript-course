@@ -71,6 +71,23 @@ const currencies = new Map([
   ['GBP', 'Pound sterling'],
 ]);
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
+
+let arr = ['a', 'b', 'c', 'd', 'e'];
+const arrtic = [...arr].reverse(); // Shallow copy of arr.reverse
+const arrSliced = arr.slice(0, 2); // a, b (c is also removed)
+const arrConcat = arr.concat(arrtic);
+/* console.log(arr.slice(-1)); // e */
+/* console.log(arr.splice(3)); // Modify original array */
+/* console.log(arr.reverse()); // Mutate method. */
+
+// Foreach method
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+for (const movement of movements) {
+  if (movement > 0) {
+    console.log(`you deposited ${movement} dollars`);
+  }
+}
