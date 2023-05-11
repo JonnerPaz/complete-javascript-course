@@ -65,12 +65,6 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // LECTURES
 
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
-
 // const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
@@ -84,10 +78,39 @@ const arrConcat = arr.concat(arrtic);
 /* console.log(arr.reverse()); // Mutate method. */
 
 // Foreach method
+// In forEarch method continue and break statements are not supported, while in for-of does
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-for (const movement of movements) {
+// calling index on for-of loops
+/* for (const [i, movement] of movements.entries()) {
   if (movement > 0) {
-    console.log(`you deposited ${movement} dollars`);
+    console.log(`Action ${i}: you deposited ${movement} dollars`);
+  } else {
+    console.log(`Action ${i} you withdrew ${Math.abs(movement)} dollars`);
   }
-}
+} */
+
+/* movements.forEach((movement, i) =>
+  console.log(
+    `Action ${i}: You ${movement > 0 ? 'deposited' : 'withdrew'} ${Math.abs(
+      movement
+    )} dollars`
+  )
+); */
+
+// forEarch with maps and sets
+
+const currencies = new Map([
+  ['USD', 'United States dollar'],
+  ['EUR', 'Euro'],
+  ['GBP', 'Pound sterling'],
+]);
+currencies.forEach((value, key, map) => {
+  console.log(`${key}: ${value}`);
+});
+
+// On sets, value and key have exactly the same value, so we use '_' to specify that we don't need that argument
+const currenciesUnique = new Set(['USD', 'GPB', 'EUR', 'EUR', 'USD']);
+currenciesUnique.forEach((value, _, map) => {
+  console.log(`${_}: ${value}`);
+});

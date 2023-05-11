@@ -99,3 +99,9 @@ const taxRate = function (rate) {
 
 const taxRater = taxRate(0.5);
 console.log(taxRater(100));
+
+// immediately invoked function expresion
+// (() => console.log('I am FAMouS'))();
+(function () {
+  console.log('Yikes!');
+})();
