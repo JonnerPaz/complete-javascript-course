@@ -62,8 +62,10 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 function displayMovements(movements) {
+  // Empty movements box
   containerMovements.innerHTML = '';
 
+  // Each movement in movements arr will be prepared and inserted to the html
   movements.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
@@ -74,6 +76,7 @@ function displayMovements(movements) {
           <div class="movements__value">${mov}€</div>
       </div>
 `;
+    // Insert to html
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 }
