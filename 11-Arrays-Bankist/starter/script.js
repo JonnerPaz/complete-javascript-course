@@ -66,13 +66,12 @@ function displayMovements(movements) {
   containerMovements.innerHTML = '';
 
   // Each movement in movements arr will be prepared and inserted to the html
-  movements.forEach(function (mov, i) {
+  movements.forEach(function(mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
        <div class="movements__row">
-          <div class="movements__type movements__type--${type}">${
-      i + 1
-    } ${type}</div>
+          <div class="movements__type movements__type--${type}">${i + 1
+      } ${type}</div>
           <div class="movements__value">${mov}€</div>
       </div>
 `;
@@ -100,7 +99,7 @@ const arrConcat = arr.concat(arrtic);
 
 // Foreach method
 // In forEarch method continue and break statements are not supported, while in for-of does
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 // calling index on for-of loops
 /* for (const [i, movement] of movements.entries()) {
@@ -120,7 +119,6 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 ); */
 
 // forEarch with maps and sets
-
 const currencies = new Map([
   ['USD', 'United States dollar'],
   ['EUR', 'Euro'],
@@ -135,3 +133,25 @@ const currenciesUnique = new Set(['USD', 'GPB', 'EUR', 'EUR', 'USD']);
 currenciesUnique.forEach((value, _, map) => {
   console.log(`${_}: ${value}`);
 });
+
+// Map method
+
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+const euroToUsd = 1.1
+const movementsUsd = movements.map((mov, i) => mov * euroToUsd)
+
+// for-of equivalent to map method
+const movementsUsdFor = []
+for (const mov of movements) {
+  movementsUsdFor.push(mov * euroToUsd)
+}
+
+const movementsDescriptions = movements.map((mov, i, arr) => {
+  return `Action ${i}: You ${mov > 0 ? 'deposited' : 'withdrew'} ${Math.abs(
+    mov
+  )} dollars`
+})
+console.log(movements)
+console.log(movementsUsd)
+console.log(movementsUsdFor)
+console.log(movementsDescriptions)
