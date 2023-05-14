@@ -64,7 +64,6 @@ const inputClosePin = document.querySelector('.form__input--pin');
 function displayMovements(movements) {
   // Empty movements box
   containerMovements.innerHTML = '';
-
   // Each movement in movements arr will be prepared and inserted to the html
   movements.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
@@ -80,7 +79,11 @@ function displayMovements(movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 }
-// console.log(displayMovements(account1.movements));
+
+function calcAndDisplayBalance(movements) {
+  const balance = movements.reduce((acc, current) => acc + current, 0);
+  labelBalance.textContent = balance;
+}
 
 function createUsername(user) {
   user.forEach(userAcc => {
@@ -91,12 +94,9 @@ function createUsername(user) {
       .join('');
   });
 }
-
-// this returns 'undefined' because we're not returning anything.
-// console.log(createUsername(accounts));
-
 createUsername(accounts);
-// console.log(accounts);
+// this returns 'undefined' if we log it because we're not returning anything.
+// console.log(createUsername(accounts));
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -169,22 +169,30 @@ const movementsDescriptions = movements.map((mov, i, arr) => {
   )} dollars`;
 });
 
-// console.log(movements);
-// console.log(movementsUsd);
-// console.log(movementsUsdFor);
-// console.log(movementsDescriptions);
-
 // filter method
-
 const deposits = movements.filter(mov => mov > 0);
-// TO FIX
 const withdrawals = movements.filter(mov => mov < 0);
 
 // for-of equivalent to filter
 const depositsFor = [];
 for (const deposit of deposits) {
-  if (mov > 0) depositsFor.push(deposit);
+  if (deposit > 0) depositsFor.push(deposit);
 }
-console.log('deposits', deposits);
-console.log('movements', movements);
-console.log('withdrawals', withdrawals);
+
+// Reduce method
+// Boil down all elements of an array into one single value
+// accumulator = snowball
+const balance = movements.reduce(
+  (accumulator, current_element) => accumulator + current_element,
+  0
+);
+
+// for-of equivalent of reduce
+let balancefor = 0;
+for (let mov of movements) balancefor += mov;
+
+const maxValue = movements.reduce(
+  (acc, current) => (acc > current ? acc : current),
+  movements[0]
+);
+console.log(maxValue);
