@@ -66,12 +66,13 @@ function displayMovements(movements) {
   containerMovements.innerHTML = '';
 
   // Each movement in movements arr will be prepared and inserted to the html
-  movements.forEach(function(mov, i) {
+  movements.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
        <div class="movements__row">
-          <div class="movements__type movements__type--${type}">${i + 1
-      } ${type}</div>
+          <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
           <div class="movements__value">${mov}€</div>
       </div>
 `;
@@ -79,7 +80,23 @@ function displayMovements(movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 }
-console.log(displayMovements(account1.movements));
+// console.log(displayMovements(account1.movements));
+
+function createUsername(user) {
+  user.forEach(userAcc => {
+    userAcc.userName = userAcc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(el => el[0])
+      .join('');
+  });
+}
+
+// this returns 'undefined' because we're not returning anything.
+// console.log(createUsername(accounts));
+
+createUsername(accounts);
+// console.log(accounts);
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -137,21 +154,37 @@ currenciesUnique.forEach((value, _, map) => {
 // Map method
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-const euroToUsd = 1.1
-const movementsUsd = movements.map((mov, i) => mov * euroToUsd)
+const euroToUsd = 1.1;
+const movementsUsd = movements.map((mov, i) => mov * euroToUsd);
 
 // for-of equivalent to map method
-const movementsUsdFor = []
+const movementsUsdFor = [];
 for (const mov of movements) {
-  movementsUsdFor.push(mov * euroToUsd)
+  movementsUsdFor.push(mov * euroToUsd);
 }
 
 const movementsDescriptions = movements.map((mov, i, arr) => {
   return `Action ${i}: You ${mov > 0 ? 'deposited' : 'withdrew'} ${Math.abs(
     mov
-  )} dollars`
-})
-console.log(movements)
-console.log(movementsUsd)
-console.log(movementsUsdFor)
-console.log(movementsDescriptions)
+  )} dollars`;
+});
+
+// console.log(movements);
+// console.log(movementsUsd);
+// console.log(movementsUsdFor);
+// console.log(movementsDescriptions);
+
+// filter method
+
+const deposits = movements.filter(mov => mov > 0);
+// TO FIX
+const withdrawals = movements.filter(mov => mov < 0);
+
+// for-of equivalent to filter
+const depositsFor = [];
+for (const deposit of deposits) {
+  if (mov > 0) depositsFor.push(deposit);
+}
+console.log('deposits', deposits);
+console.log('movements', movements);
+console.log('withdrawals', withdrawals);
