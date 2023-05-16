@@ -79,21 +79,43 @@ function displayMovements(movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 }
+displayMovements(account1.movements);
 
 function calcAndDisplayBalance(movements) {
   const balance = movements.reduce((acc, current) => acc + current, 0);
   labelBalance.textContent = balance;
 }
 
+function calcDisplaySummary(movements) {
+  const incomes = movements
+    .filter(item => item > 0)
+    .reduce((acc, current) => acc + current);
+  labelSumIn.textContent = `${incomes}💶`;
+
+  const outcomes = movements
+    .filter(item => item < 0)
+    .reduce((acc, current) => acc + current);
+  labelSumOut.textContent = `${Math.abs(outcomes)}💶`;
+
+  const interest = movements
+    .filter(el => el > 0)
+    .map(deposit => (deposit * 1.2) / 100)
+    .filter(interest => interest >= 1)
+    .reduce((acc, current) => acc + current);
+  labelSumInterest.textContent = `${interest}`;
+}
+calcDisplaySummary(account1.movements);
+
 function createUsername(user) {
   user.forEach(userAcc => {
-    userAcc.userName = userAcc.owner
+    userAcc.username = userAcc.owner
       .toLowerCase()
       .split(' ')
       .map(el => el[0])
       .join('');
   });
 }
+
 createUsername(accounts);
 // this returns 'undefined' if we log it because we're not returning anything.
 // console.log(createUsername(accounts));
@@ -141,14 +163,14 @@ const currencies = new Map([
   ['EUR', 'Euro'],
   ['GBP', 'Pound sterling'],
 ]);
-currencies.forEach((value, key, map) => {
-  console.log(`${key}: ${value}`);
+const forEachMap = currencies.forEach((value, key, map) => {
+  // console.log(`${key}: ${value}`);
 });
 
 // On sets, value and key have exactly the same value, so we use '_' to specify that we don't need that argument
 const currenciesUnique = new Set(['USD', 'GPB', 'EUR', 'EUR', 'USD']);
-currenciesUnique.forEach((value, _, map) => {
-  console.log(`${_}: ${value}`);
+const forEachSet = currenciesUnique.forEach((value, _, map) => {
+  // console.log(`${_}: ${value}`);
 });
 
 // Map method
@@ -195,4 +217,11 @@ const maxValue = movements.reduce(
   (acc, current) => (acc > current ? acc : current),
   movements[0]
 );
-console.log(maxValue);
+// console.log(maxValue);
+
+// chaining arr methods
+
+const totalDepositsUsd = movements
+  .filter(mov => mov > 0)
+  .map(mov => mov * euroToUsd)
+  .reduce((acc, current) => acc + current);
