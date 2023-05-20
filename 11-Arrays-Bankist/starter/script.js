@@ -61,11 +61,11 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-function displayMovements(movements) {
+function displayMovements(account) {
   // Empty movements box
   containerMovements.innerHTML = '';
   // Each movement in movements arr will be prepared and inserted to the html
-  movements.forEach(function (mov, i) {
+  account.movements.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
        <div class="movements__row">
@@ -81,25 +81,25 @@ function displayMovements(movements) {
 }
 // displayMovements(account1.movements);
 
-function calcAndDisplayBalance(movements) {
-  const balance = movements.reduce((acc, current) => acc + current, 0);
-  labelBalance.textContent = balance;
+function calcAndDisplayBalance(acc) {
+  acc.balance = acc.movements.reduce((acc, current) => acc + current, 0);
+  labelBalance.textContent = acc.balance;
 }
 
-function calcDisplaySummary(movements, arr) {
-  const incomes = movements
+function calcDisplaySummary(acc) {
+  const incomes = acc.movements
     .filter(item => item > 0)
     .reduce((acc, current) => acc + current);
   labelSumIn.textContent = `${incomes}💶`;
 
-  const outcomes = movements
+  const outcomes = acc.movements
     .filter(item => item < 0)
     .reduce((acc, current) => acc + current);
   labelSumOut.textContent = `${Math.abs(outcomes)}💶`;
 
-  const interest = movements
+  const interest = acc.movements
     .filter(el => el > 0)
-    .map(deposit => (deposit * arr.interestRate) / 100)
+    .map(deposit => (deposit * acc.interestRate) / 100)
     .filter(interest => interest >= 1)
     .reduce((acc, current) => acc + current, 0);
   labelSumInterest.textContent = `${interest}`;
@@ -122,6 +122,17 @@ createUsername(accounts);
 
 let currentAccount;
 
+const updateUI = function (acc) {
+  // Display movements
+  displayMovements(acc);
+
+  // Display balance
+  calcAndDisplayBalance(acc);
+
+  // Display summary
+  calcDisplaySummary(acc);
+};
+
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
   currentAccount = accounts.find(
@@ -135,16 +146,52 @@ btnLogin.addEventListener('click', function (e) {
       currentAccount.owner.split(' ')[0]
     }`;
     containerApp.style.opacity = '100';
-    // Display Movements
-    displayMovements(currentAccount.movements);
-    // Display Balance
-    calcAndDisplayBalance(currentAccount.movements);
-    // Display Summary
-    calcDisplaySummary(currentAccount.movements, currentAccount);
-    // Leave empty login field. This works because of order of operations, which this time starts from the right
+    updateUI(currentAccount);
     inputLoginPin.value = inputLoginUsername.value = '';
     inputLoginPin.blur();
-  } else {
-    console.error('fuck');
   }
+});
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  inputTransferAmount.value = inputTransferTo.value = '';
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    // Doing the transfer
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+
+    // Update UI
+    updateUI(currentAccount);
+  }
+});
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    console.log(index);
+
+    // Delete account
+    accounts.splice(index, 1);
+
+    // Hide UI
+    containerApp.style.opacity = 0;
+  }
+
+  inputCloseUsername.value = inputClosePin.value = '';
 });
