@@ -61,11 +61,15 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-function displayMovements(account) {
+function displayMovements(account, sort = false) {
   // Empty movements box
   containerMovements.innerHTML = '';
   // Each movement in movements arr will be prepared and inserted to the html
-  account.movements.forEach(function (mov, i) {
+  const sorted = sort
+    ? account.movements.slice().sort((a, b) => a - b)
+    : account.movements;
+
+  sorted.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
        <div class="movements__row">
@@ -125,10 +129,8 @@ let currentAccount;
 const updateUI = function (acc) {
   // Display movements
   displayMovements(acc);
-
   // Display balance
   calcAndDisplayBalance(acc);
-
   // Display summary
   calcDisplaySummary(acc);
 };
@@ -168,10 +170,20 @@ btnTransfer.addEventListener('click', function (e) {
     // Doing the transfer
     currentAccount.movements.push(-amount);
     receiverAcc.movements.push(amount);
-
     // Update UI
     updateUI(currentAccount);
   }
+});
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(el => el >= amount * 0.1)) {
+    // add data to movements
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
 });
 
 btnClose.addEventListener('click', function (e) {
@@ -185,13 +197,16 @@ btnClose.addEventListener('click', function (e) {
       acc => acc.username === currentAccount.username
     );
     console.log(index);
-
     // Delete account
     accounts.splice(index, 1);
-
     // Hide UI
     containerApp.style.opacity = 0;
   }
-
   inputCloseUsername.value = inputClosePin.value = '';
+});
+
+let conditional = false;
+btnSort.addEventListener('click', function () {
+  displayMovements(currentAccount, !conditional);
+  conditional = !conditional;
 });

@@ -107,3 +107,95 @@ const totalDepositsUsd = movements
 
 // movements.find(mov => mov < 0);
 const ownership = movements.find(owner => owner.owner === 'Jessica Davis');
+
+// some and every methods
+
+// Only evaluates equality
+movements.includes(-130);
+movements.some(el => el === -130); // Same as above
+
+// With SOME you can add a condition
+const anyDeposit = movements.some(mov => mov > 90);
+
+// Every pass that condition to every element of the array, and return true or false
+movements.every(el => el > 0); // false
+// account4.movements.every(el => el > 0); // True
+
+// Flat and flatmap
+
+const flatarr = [[[1, 2]], 3, [4, [5, 6]], 7, 8, 9];
+flatarr.flat(); // [[1, 2], 3, 4, [5, 6], 7, 8, 9]
+flatarr.flat(2); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+// flat
+const overallBalance = movements
+  .map(el => el.movements)
+  .flat()
+  .reduce((acc, current) => acc + current, 0);
+
+// flatmap
+const overallBalance2 = movements
+  .flatMap(el => el.movements)
+  .reduce((acc, current) => acc + current, 0);
+
+// Sort
+
+// result < 0 = keeps order
+// result > 0 = switch order
+
+const sorty = movements.sort((a, b) => a - b);
+console.log(movements.sort((a, b) => (a > b ? 1 : -1))); // Same result as above
+
+// More array methods
+
+// fill method is a mutable method
+const x = new Array(7); // 7 empty spaces of an array
+x.fill(1, 3, 5);
+// x.fill(1);
+//console.log(x);
+const arri = [1, 2, 3, 4, 5, 6];
+arri.fill(26, 2, 5);
+// console.log(arri);
+
+// Array.from
+const y = Array.from({ length: 8 }, () => 2);
+console.log(y);
+const z = Array.from({ length: 7 }, (_, i) => i + 1);
+// 100 roll dices
+const rareRoll = Array.from({ length: 100 }, () =>
+  Math.trunc(Math.random() * 6 + 1)
+);
+
+labelBalance.addEventListener('click', function () {
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', ''))
+  );
+  console.log(movementsUI);
+});
+
+const allDeposits = accounts
+  .flatMap(el => el.movements)
+  .filter(el => el > 0)
+  .reduce((acc, current) => acc + current, 0);
+// console.log(allDeposits);
+
+const deposits1000 = accounts
+  .flatMap(el => el.movements)
+  .filter(el => el >= 1000).length;
+
+const deposits1111 = accounts
+  .flatMap(el => el.movements)
+  // if current is >= 1000 it adds to acc (which is 0) every time condition is true
+  .reduce((acc, current) => (current >= 1000 ? ++acc : acc), 0);
+
+const { depo: indi, withd: mandi } = accounts
+  .flatMap(el => el.movements)
+  .reduce(
+    (acc, current) => {
+      acc[current > 0 ? 'depo' : 'withd'] += current;
+      return acc;
+    },
+    { depo: 0, withd: 0 }
+  );
+console.log(indi, mandi);
