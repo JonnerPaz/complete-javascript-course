@@ -105,3 +105,15 @@ console.log(taxRater(100));
 (function () {
   console.log('Yikes!');
 })();
+
+// Closures
+// Are not a feature, it just happen
+const secureBooking = function () {
+  let passengerCount = 0;
+  return function () {
+    passengerCount++;
+    console.log(`${passengerCount} passengers`);
+  };
+};
+
+const booker = secureBooking();
