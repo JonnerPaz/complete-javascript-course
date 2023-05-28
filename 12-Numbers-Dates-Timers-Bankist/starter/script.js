@@ -96,7 +96,7 @@ function displayMovements(account, sort = false) {
           <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-          <div class="movements__value">${mov}€</div>
+          <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>
 `;
     // Insert to html
@@ -107,26 +107,26 @@ function displayMovements(account, sort = false) {
 
 function calcAndDisplayBalance(acc) {
   acc.balance = acc.movements.reduce((acc, current) => acc + current, 0);
-  labelBalance.textContent = acc.balance;
+  labelBalance.textContent = acc.balance.toFixed(2);
 }
 
 function calcDisplaySummary(acc) {
   const incomes = acc.movements
     .filter(item => item > 0)
     .reduce((acc, current) => acc + current);
-  labelSumIn.textContent = `${incomes}💶`;
+  labelSumIn.textContent = `${incomes.toFixed(2)}💶`;
 
   const outcomes = acc.movements
     .filter(item => item < 0)
     .reduce((acc, current) => acc + current);
-  labelSumOut.textContent = `${Math.abs(outcomes)}💶`;
+  labelSumOut.textContent = `${outcomes.toFixed(2)}💶`;
 
   const interest = acc.movements
     .filter(el => el > 0)
     .map(deposit => (deposit * acc.interestRate) / 100)
     .filter(interest => interest >= 1)
     .reduce((acc, current) => acc + current, 0);
-  labelSumInterest.textContent = `${interest}`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}`;
 }
 // console.log(calcDisplaySummary(account2.movements, account2));
 
@@ -230,6 +230,9 @@ btnSort.addEventListener('click', function () {
   displayMovements(currentAccount, !conditional);
   conditional = !conditional;
 });
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
+
+labelBalance.addEventListener('click', function () {
+  [...document.querySelectorAll('.movements__row')].forEach((row, i) => {
+    if (i % 2 === 0) row.style.backgroundColor = 'gray';
+  });
+});
