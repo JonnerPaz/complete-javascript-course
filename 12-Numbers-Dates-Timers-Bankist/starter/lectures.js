@@ -23,3 +23,19 @@ const bigIntNumber = 3284712041293487123402193421129347129384234n;
 const bigIntNumber2 = BigInt(3284712041293487123402n);
 
 // console.log(bigIntNumber);
+
+// Creating Dates
+// Year, month, day, hour, minutes, seconds
+
+const now = new Date(); // gives current date.
+const dateAcc1 = new Date(account1.movementsDates[0]); // '2019-11-18T21:31:17.178Z'
+console.log([
+  dateAcc1.getFullYear(),
+  dateAcc1.getMonth(),
+  dateAcc1.getDay(),
+  dateAcc1.getDate(),
+  dateAcc1.getHours(),
+  dateAcc1.getMinutes(),
+  dateAcc1.getSeconds(),
+]);
+const dateParams = new Date(2022, 03, 14, 04, 55, 34);
