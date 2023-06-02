@@ -39,3 +39,15 @@ console.log([
   dateAcc1.getSeconds(),
 ]);
 const dateParams = new Date(2022, 03, 14, 04, 55, 34);
+
+// format num
+
+const num = 38888.54;
+const option = {
+  style: 'currency',
+  // unit: 'mile-per-hour'
+  currency: 'EUR',
+};
+console.log(new Intl.NumberFormat('en-US', option).format(num));
+console.log(new Intl.NumberFormat('jp-JP', option).format(num));
+console.log(new Intl.NumberFormat('es-VE', option).format(num));
