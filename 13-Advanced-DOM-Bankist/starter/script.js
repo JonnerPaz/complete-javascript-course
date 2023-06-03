@@ -39,18 +39,63 @@ document.addEventListener('keydown', function (e) {
 
 btnScrollTo.addEventListener('click', e => {
   e.preventDefault();
+
   const s1coords = section1.getBoundingClientRect();
   // window.close();
-  console.log(
+
+  /* console.log(
     document.documentElement.clientHeight,
     document.documentElement.clientWidth
-  );
-  console.log(s1coords);
+  ); */
 
   // Scrolling. Receives left and top position
   // Going to section 1
-  window.scrollTo(
+
+  /* window.scrollTo(
     s1coords.left + window.scrollX,
     s1coords.top + window.scrollY
-  );
+  ); */
+
+  // Other way to do the same
+  /* window.scrollTo({
+    left: s1coords.left + window.scrollX,
+    top:s1coords.top + window.scrollY,
+    behavior: 'smooth'
+  }) */
+
+  // More modern way
+  section1.scrollIntoView({
+    behavior: 'smooth',
+  });
+});
+
+// Page navigation
+
+// Remember: when calling events, it is recommended to use 'function' keyword instead of arrow function
+/* document.querySelectorAll('.nav__link').forEach(function (el) {
+  el.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const id = this.getAttribute('href');
+    console.log(id);
+    document.querySelector(id).scrollIntoView({
+      behavior: 'smooth',
+    });
+  });
+}); */
+
+// Implementing Event navigation
+
+// 1. addEventListener to common parent element
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  e.preventDefault();
+
+  // 2. determine what element originated the event
+  // Matching strategy
+  if (e.target.classList.contains('nav__link')) {
+    const id = e.target.getAttribute('href');
+    document.querySelector(id).scrollIntoView({
+      behavior: 'smooth',
+    });
+  }
 });
