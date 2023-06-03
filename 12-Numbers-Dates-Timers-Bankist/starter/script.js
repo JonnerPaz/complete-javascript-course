@@ -177,10 +177,34 @@ function createUsername(user) {
 }
 
 createUsername(accounts);
-// this returns 'undefined' if we log it because we're not returning anything.
-// console.log(createUsername(accounts));
 
-let currentAccount;
+function startLogOutTimer() {
+  // set time to 5 minutes
+  let time = 100;
+  const tick = () => {
+    let minutes = String(Math.trunc(time / 60)).padStart(2, 0);
+    let seconds = String(time % 60).padStart(2, 0);
+
+    // When 0 seconds, stop timer and logout user
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = `Log in to get started`;
+      containerApp.style.opacity = 0;
+    }
+
+    // In each call, print the remaining time to updateUI
+    labelTimer.textContent = `${minutes}:${seconds}`;
+    time--;
+  };
+  // call the timer every second
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+}
+
+// Event handlers
+
+let currentAccount, timer;
 
 function updateUI(acc) {
   // Display movements
@@ -190,10 +214,6 @@ function updateUI(acc) {
   // Display summary
   calcDisplaySummary(acc);
 }
-
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -216,12 +236,18 @@ btnLogin.addEventListener('click', function (e) {
       year: 'numeric',
       // weekday: 'long',
     };
-    const locale = navigator.language;
+
+    // const locale = navigator.language;
     labelDate.textContent = new Intl.DateTimeFormat(
       currentAccount.locale,
       options
     ).format(now);
     containerApp.style.opacity = '100';
+
+    // check if a timer already exists and kill it
+    if (timer) clearInterval(timer);
+    timer = startLogOutTimer();
+
     updateUI(currentAccount);
     inputLoginPin.value = inputLoginUsername.value = '';
     inputLoginPin.blur();
@@ -251,6 +277,10 @@ btnTransfer.addEventListener('click', function (e) {
 
     // Update UI
     updateUI(currentAccount);
+
+    // Reset interval
+    clearInterval(timer);
+    startLogOutTimer();
   }
 });
 
@@ -258,13 +288,19 @@ btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Number(inputLoanAmount.value);
   if (amount > 0 && currentAccount.movements.some(el => el >= amount * 0.1)) {
-    // add data to movements
-    currentAccount.movements.push(amount);
+    setTimeout(function () {
+      // add data to movements
+      currentAccount.movements.push(amount);
 
-    // Create and push date
-    currentAccount.movementsDates.push(new Date().toISOString());
+      // Create and push date
+      currentAccount.movementsDates.push(new Date().toISOString());
 
-    updateUI(currentAccount);
+      updateUI(currentAccount);
+
+      // Reset interval
+      clearInterval(timer);
+      startLogOutTimer();
+    }, 2500);
   }
   inputLoanAmount.value = '';
 });

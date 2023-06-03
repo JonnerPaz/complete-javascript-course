@@ -51,3 +51,23 @@ const option = {
 console.log(new Intl.NumberFormat('en-US', option).format(num));
 console.log(new Intl.NumberFormat('jp-JP', option).format(num));
 console.log(new Intl.NumberFormat('es-VE', option).format(num));
+
+// timers
+const ings = ['sauna', 'olives'];
+const timer = setTimeout(
+  (in1, in2) => console.log(`here is your pizza with ${in1}, and ${in2}`),
+  3000,
+  ...ings
+);
+console.log('waiting...'); // this console.log will appear first than timer
+if (ings.includes('olives')) clearTimeout(timer); // clear timeout. It will not print to the console
+
+// loop a timer
+setInterval(() => {
+  const now = new Date();
+  console.log(
+    `It's ${new Intl.DateTimeFormat('en-Us', { month: 'long' }).format(
+      now
+    )}, ${now.getHours()}:${now.getMinutes()} with ${now.getSeconds()}`
+  );
+}, 100_000);
