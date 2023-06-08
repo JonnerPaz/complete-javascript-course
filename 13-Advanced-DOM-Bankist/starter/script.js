@@ -10,6 +10,7 @@ const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
+const nav = document.querySelector('.nav');
 const section1 = document.querySelector('#section--1');
 const tabs = document.querySelectorAll('.operations__tab');
 const tabsContainer = document.querySelector('.operations__tab-container');
@@ -44,12 +45,6 @@ btnScrollTo.addEventListener('click', e => {
   e.preventDefault();
 
   const s1coords = section1.getBoundingClientRect();
-  // window.close();
-
-  /* console.log(
-    document.documentElement.clientHeight,
-    document.documentElement.clientWidth
-  ); */
 
   // Scrolling. Receives left and top position
   // Going to section 1
@@ -62,7 +57,7 @@ btnScrollTo.addEventListener('click', e => {
   // Other way to do the same
   /* window.scrollTo({
     left: s1coords.left + window.scrollX,
-    top:s1coords.top + window.scrollY,
+    top:  s1coords.top + window.scrollY,
     behavior: 'smooth'
   }) */
 
@@ -75,27 +70,14 @@ btnScrollTo.addEventListener('click', e => {
 // Page navigation
 
 // Remember: when calling events, it is recommended to use 'function' keyword instead of arrow function
-/* document.querySelectorAll('.nav__link').forEach(function (el) {
-  el.addEventListener('click', function (e) {
-    e.preventDefault();
 
-    const id = this.getAttribute('href');
-    console.log(id);
-    document.querySelector(id).scrollIntoView({
-      behavior: 'smooth',
-    });
-  });
-}); */
-
-// Implementing Event navigation
-
+// Implementing Event delegation on links
 // 1. addEventListener to common parent element
 document.querySelector('.nav__links').addEventListener('click', function (e) {
   e.preventDefault();
 
-  // 2. determine what element originated the event
-  // Matching strategy
-  console.log(e.target.classList);
+  // 2. determine what element originated the event. Matching strategy
+  // console.log(e.target.classList);
   if (e.target.classList.contains('nav__link')) {
     const id = e.target.getAttribute('href');
     document.querySelector(id).scrollIntoView({
@@ -104,8 +86,7 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
   }
 });
 
-// Tabbed Component
-// Using Event delegation
+// Tabbed Component Using Event Delegation
 tabsContainer.addEventListener('click', function (e) {
   e.preventDefault();
   const clicked = e.target.closest('.operations__tab');
@@ -128,3 +109,25 @@ tabsContainer.addEventListener('click', function (e) {
     .querySelector(`.operations__content--${clicked.dataset.tab}`)
     .classList.add('operations__content--active');
 });
+
+// Menu Fade links. Passing arguments on an event
+const fadeInFadeOut = function (e) {
+  // Not using closest() right below because there are no children elements that can accidentally fall in the event
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+
+    // Here we move to parent element and from there we search a child or a group of children elements
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    // Change opacity of elements
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+};
+
+// first argument of bind is new 'this' reference
+nav.addEventListener('mouseover', fadeInFadeOut.bind(0.5));
+nav.addEventListener('mouseout', fadeInFadeOut.bind(1));
