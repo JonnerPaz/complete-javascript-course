@@ -5,6 +5,7 @@
 
 // Selectors
 
+const header = document.querySelector('.header');
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
@@ -120,7 +121,7 @@ const fadeInFadeOut = function (e) {
     const siblings = link.closest('.nav').querySelectorAll('.nav__link');
     const logo = link.closest('.nav').querySelector('img');
 
-    // Change opacity of elements
+    // Change opacity of elements using "this" to matching "bind" method on event call
     siblings.forEach(el => {
       if (el !== link) el.style.opacity = this;
     });
@@ -131,3 +132,55 @@ const fadeInFadeOut = function (e) {
 // first argument of bind is new 'this' reference
 nav.addEventListener('mouseover', fadeInFadeOut.bind(0.5));
 nav.addEventListener('mouseout', fadeInFadeOut.bind(1));
+
+// Sticky navigation
+
+// const initialCoordinates = section1.getBoundingClientRect();
+/* window.addEventListener('scroll', function () {
+  // console.log(window.scrollY);
+  const conditional =
+    window.scrollY >= initialCoordinates.top
+      ? nav.classList.add('sticky')
+      : nav.classList.remove('sticky');
+  return conditional;
+}); */
+
+// sticky navigation: intersection observer API
+const navHeigth = nav.getBoundingClientRect().height;
+const headerObserver = new IntersectionObserver(
+  entries => {
+    // whenever the target is intersected by root and threshold, this will be called
+    // there's only 1 threshold so we need just one element
+    const [entry] = entries;
+    return !entry.isIntersecting
+      ? nav.classList.add('sticky')
+      : nav.classList.remove('sticky');
+  },
+  {
+    // target that the element is intersecting
+    root: null, // intersects the entire window when "null"
+    threshold: [0], // 0 = none of the viewport visible, 1 = All viewport visible
+    rootMargin: `-${navHeigth}px`, // margin applied to desirable box. Negative to activate it outside of box
+  }
+);
+headerObserver.observe(header);
+
+// Reveal sections
+
+const allSections = document.querySelectorAll('.section');
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSections.forEach(function (section) {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+});
