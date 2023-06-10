@@ -6,6 +6,8 @@
 // Selectors
 
 const header = document.querySelector('.header');
+const allSections = document.querySelectorAll('.section');
+const imgTargets = document.querySelectorAll('img[data-src]'); // checks all images with data-src class
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
@@ -167,11 +169,11 @@ headerObserver.observe(header);
 
 // Reveal sections
 
-const allSections = document.querySelectorAll('.section');
 const revealSection = function (entries, observer) {
   const [entry] = entries;
   if (!entry.isIntersecting) return;
   entry.target.classList.remove('section--hidden');
+  // console.log(entry);
   observer.unobserve(entry.target);
 };
 
@@ -182,5 +184,33 @@ const sectionObserver = new IntersectionObserver(revealSection, {
 
 allSections.forEach(function (section) {
   sectionObserver.observe(section);
-  section.classList.add('section--hidden');
+  // section.classList.add('section--hidden');
 });
+
+// Lazy loading images
+
+const revealImg = function (entries, observer) {
+  const [entry] = entries;
+  if (!entry.isIntersecting) return;
+  entry.target.setAttribute('src', entry.target.dataset.src); // load full img resolution
+  // Once the full img resolution is loaded, this event is executed
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(revealImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px',
+});
+imgTargets.forEach(img => imgObserver.observe(img));
+
+// Slider Component
+
+const slider = document.querySelector('.slider');
+const slides = document.querySelectorAll('.slide');
+slider.style.transform = 'scale(0.2)';
+slider.style.overflow = 'visible';
+slides.forEach((el, i) => (el.style.transform = `translateX(${100 * i}%)`));
