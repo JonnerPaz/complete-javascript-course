@@ -8,6 +8,8 @@
 const header = document.querySelector('.header');
 const allSections = document.querySelectorAll('.section');
 const imgTargets = document.querySelectorAll('img[data-src]'); // checks all images with data-src class
+const btnSliderLeft = document.querySelector('.slider__btn--left');
+const btnSliderRight = document.querySelector('.slider__btn--right');
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
@@ -184,6 +186,7 @@ const sectionObserver = new IntersectionObserver(revealSection, {
 
 allSections.forEach(function (section) {
   sectionObserver.observe(section);
+  // this is commented for now
   // section.classList.add('section--hidden');
 });
 
@@ -209,8 +212,38 @@ imgTargets.forEach(img => imgObserver.observe(img));
 
 // Slider Component
 
+let curSlide = 0;
 const slider = document.querySelector('.slider');
 const slides = document.querySelectorAll('.slide');
-slider.style.transform = 'scale(0.2)';
+const maxSlide = slides.length;
+slider.style.transform = 'scale(0.2) translateX(1200px)';
 slider.style.overflow = 'visible';
-slides.forEach((el, i) => (el.style.transform = `translateX(${100 * i}%)`));
+
+// function to move around the slides
+const goToSlide = function (slide = 0) {
+  slides.forEach(
+    (el, i) => (el.style.transform = `translateX(${100 * (i - slide)}%)`)
+  );
+};
+goToSlide();
+
+const nextSlide = function () {
+  if (curSlide === maxSlide - 1) {
+    curSlide = 0;
+  } else {
+    curSlide++;
+  }
+  goToSlide(curSlide);
+};
+
+const prevSlide = function (slide) {
+  if (curSlide === 0) {
+    curSlide = maxSlide - 1;
+  } else {
+    curSlide--;
+  }
+  goToSlide(curSlide);
+};
+// Going to next slide
+btnSliderRight.addEventListener('click', nextSlide);
+btnSliderLeft.addEventListener('click', prevSlide);
