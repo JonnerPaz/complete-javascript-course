@@ -225,7 +225,10 @@ const slider = function () {
     });
   };
 
+  console.log('FINAL FOLDER');
   const activateDot = function (slide) {
+    console.log(slide);
+    curSlide = slide;
     document
       .querySelectorAll('.dots__dot')
       .forEach(dot => dot.classList.remove('dots__dot--active'));
@@ -284,7 +287,7 @@ const slider = function () {
     if (e.target.classList.contains('dots__dot')) {
       const { slide } = e.target.dataset;
       goToSlide(slide);
-      activateDot(slide);
+      activateDot(Number(slide));
     }
   });
 };
