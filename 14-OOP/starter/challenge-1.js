@@ -13,21 +13,22 @@ GOOD LUCK 😀
 */
 
 const Car = function (make, speed) {
-  (this.make = make), (this.speed = speed);
+  this.make = make;
+  this.speed = speed;
 };
 
-CarES6.prototype.accelerate = function () {
+Car.prototype.accelerate = function () {
   this.speed = this.speed + 10;
   console.log(this.speed);
 };
 
-CarES6.prototype.brake = function () {
+Car.prototype.brake = function () {
   this.speed = this.speed - 5;
   console.log(this.speed);
 };
 
-const bmw = new CarES6('BMW', 120);
-const mercedes = new CarES6('Mercedes', 95);
+const bmw = new Car('BMW', 120);
+const mercedes = new Car('Mercedes', 95);
 
 // This changes mutable value
 /* mercedes.accelerate();

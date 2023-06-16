@@ -2,8 +2,9 @@
 
 // constructor Functions
 
-const Person = function (nameSpace, age) {
-  (this.nameSpace = nameSpace), (this.age = age);
+const Person = function (firstName, age) {
+  this.nameSpace = firstName;
+  this.age = age;
 
   // Never create a method inside of a constructor function
   /* this.calcAge = function () {
@@ -40,8 +41,8 @@ Person.prototype.species = 'human'; // Adding attributes to the class
 // ES6 Classes
 
 class PersonCL {
-  constructor(fullName, birthyear) {
-    this.firstName = fullName;
+  constructor(firstName, birthyear) {
+    this.firstName = firstName;
     this.birthyear = birthyear;
   }
 
@@ -81,3 +82,16 @@ const PersonProto = {
   },
 };
 const steven = Object.create(PersonProto);
+
+// Inheritance with functions
+const Student = function (firstName, birthyear, course) {
+  Person.call(this, firstName, birthyear);
+  this.course = course;
+};
+
+Student.prototype = Object.create(Person.prototype); // Setting manually __proto__
+Student.prototype.constructor = Student;
+
+Student.prototype.introduce = function () {
+  console.log(`Hello! my name is ${this.firstName} and I'm ${this.birthyear}`);
+};
