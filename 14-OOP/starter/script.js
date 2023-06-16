@@ -38,3 +38,48 @@ Person.prototype.species = 'human'; // Adding attributes to the class
 console.log(typeof arr.__proto__); // Object XD */
 
 const h1 = document.querySelector('h1');
+
+// ES6 Classes
+
+class PersonCL {
+  constructor(fullName, birthyear) {
+    this.firstName = fullName;
+    this.birthyear = birthyear;
+  }
+
+  // with this syntactic sugar, you can add method in classes, NOT in constructors
+  calcAge() {
+    console.log(2037 - this.birthyear);
+  }
+
+  get age() {
+    return 2037 - this.birthyear;
+  }
+
+  set fullName(nameSpace) {
+    if (nameSpace.includes(' ')) this._fullName = nameSpace;
+    else alert(`${nameSpace} does not include full name`);
+  }
+
+  get fullName() {
+    return this._fullName;
+  }
+}
+
+const jessica = new PersonCL('Jessica', 2002);
+
+// getters and setters: Accessor properties
+const account = {
+  owner: 'Jonner',
+  movements: [120, 22, 159, 472, 556],
+
+  // getters starts with get keyword
+  get latest() {
+    return this.movements.at(-1);
+  },
+
+  // setters starts with set keyword
+  set latest(el) {
+    return this.movements.push(el);
+  },
+};

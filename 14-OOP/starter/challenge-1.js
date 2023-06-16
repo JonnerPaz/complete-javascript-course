@@ -29,9 +29,10 @@ Car.prototype.brake = function () {
 const bmw = new Car('BMW', 120);
 const mercedes = new Car('Mercedes', 95);
 
-mercedes.accelerate();
+// This changes mutable value
+/* mercedes.accelerate();
 mercedes.accelerate();
 mercedes.brake();
 bmw.accelerate();
 bmw.accelerate();
-bmw.brake();
+bmw.brake(); */
