@@ -11,16 +11,62 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+class Workout {
+  date = new Date();
+  id = (Date.now() + '').slice(-10);
+
+  constructor(coords, distance, duration) {
+    this.coords = coords; // [lat, lng]
+    this.distance = distance; // in km
+    this.duration = duration; // in min
+  }
+}
+
+class Running extends Workout {
+  constructor(coords, distance, duration, cadence) {
+    super(coords, distance, duration);
+    this.cadence = cadence;
+
+    this.calcPace();
+  }
+
+  calcPace() {
+    // min per km
+    this.pace = this.duration / this.distance;
+    return this.pace;
+  }
+}
+
+class Cycling extends Workout {
+  constructor(coords, distance, duration, elevationGain) {
+    super(coords, distance, duration);
+    this.elevationGain = elevationGain;
+    this.calcSpeed();
+  }
+
+  calcSpeed() {
+    this.speed = this.distance / (this.duration / 60);
+    return this.speed;
+  }
+}
+
+const run1 = new Running([39, -12], 5.2, 24, 178);
+const cycle1 = new Cycling([39, -12], 27, 95, 523);
+console.log(run1, cycle1);
+
+/////////////////////////////////////////////////////////
+// APP ARCHITECTURE /////////////////////////////////////
+
 class App {
   #map;
   #mapEvent;
 
   constructor() {
-    this.#getPosition(); // Due to constructor being called at create a new object
-
     // Attaching this to load once the object is created
+    this.#getPosition(); // Due to constructor being called at create a new object, this will be triggered
     form.addEventListener('submit', this.#newWorkout.bind(this));
-    inputType.addEventListener('change', this.#toggleElevationField); // this doesnt use bind because it is not using this in its function
+    // this doesn't use bind because it's not using this in its function
+    inputType.addEventListener('change', this.#toggleElevationField);
   }
 
   #getPosition() {
@@ -28,8 +74,9 @@ class App {
     if (navigator.geolocation) {
       // Recibes succesfull callback and error callback
       navigator.geolocation.getCurrentPosition(
-        this.#loadMap.bind(this),
+        this.#loadMap.bind(this), // succesfull callback first
         function () {
+          // error callback
           alert('Could not get your position');
         }
       );
