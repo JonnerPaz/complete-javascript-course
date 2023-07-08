@@ -11,6 +11,7 @@ const inputElevation = document.querySelector('.form__input--elevation');
 class Workout {
   date = new Date();
   id = (Date.now() + '').slice(-10);
+  click = 0;
 
   constructor(coords, distance, duration) {
     this.coords = coords; // [lat, lng]
@@ -25,6 +26,10 @@ class Workout {
     this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${
       months[this.date.getMonth()]
     } ${this.date.getDate()}`;
+  }
+
+  clicks() {
+    this.click++;
   }
 }
 
@@ -71,6 +76,7 @@ console.log(run1, cycle1);
 
 class App {
   #map;
+  #mapZoom = 15;
   #mapEvent;
   #workouts = [];
 
@@ -80,6 +86,7 @@ class App {
     form.addEventListener('submit', this.#newWorkout.bind(this));
     // this doesn't use bind because it's not using this in its function
     inputType.addEventListener('change', this.#toggleElevationField);
+    containerWorkouts.addEventListener('click', this.#moveToPopup.bind(this));
   }
 
   #getPosition() {
@@ -101,7 +108,7 @@ class App {
     const { longitude } = position.coords;
     const coords = [latitude, longitude];
 
-    this.#map = L.map('map').setView(coords, 15);
+    this.#map = L.map('map').setView(coords, this.#mapZoom);
 
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
       attribution:
@@ -176,7 +183,6 @@ class App {
 
     // Add new object to workout array
     this.#workouts.push(workout);
-    console.log(this.#workouts);
 
     // Render workout on map as marker
     this.#renderWorkoutMarker(workout);
@@ -264,6 +270,26 @@ class App {
 
     console.log(html);
     form.insertAdjacentHTML('afterend', html);
+  }
+
+  #moveToPopup(e) {
+    const workoutEl = e.target.closest('.workout');
+
+    if (!workoutEl) return;
+
+    const workout = this.#workouts.find(
+      work => work.id === workoutEl.dataset.id
+    );
+
+    this.#map.setView(workout.coords, this.#mapZoom, {
+      animate: true,
+      pan: {
+        duration: 1,
+      },
+    });
+
+    console.log(workout);
+    workout.clicks();
   }
 }
 
