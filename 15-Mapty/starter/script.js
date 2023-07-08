@@ -83,6 +83,10 @@ class App {
   constructor() {
     // Attaching this to load once the object is created
     this.#getPosition(); // Due to constructor being called at create a new object, this will be triggered
+
+    // Get data from local storage
+    this.getLocalStorage();
+
     form.addEventListener('submit', this.#newWorkout.bind(this));
     // this doesn't use bind because it's not using this in its function
     inputType.addEventListener('change', this.#toggleElevationField);
@@ -117,6 +121,10 @@ class App {
 
     // Handling clicks on map
     this.#map.on('click', this.#showForm.bind(this));
+
+    this.#workouts.forEach(work => {
+      this.#renderWorkoutMarker(work);
+    });
   }
 
   #showForm(mapE) {
@@ -192,6 +200,9 @@ class App {
 
     // Hide the form + clear input fields
     this.#hideForm();
+
+    // Set local storage to all workouts
+    this.setLocalStorage();
 
     // reseting inputs
     inputDistance.value =
@@ -288,8 +299,32 @@ class App {
       },
     });
 
-    console.log(workout);
-    workout.clicks();
+    // interact with public interface of Workouts class
+    /* console.log(workout);
+    workout.clicks(); */
+  }
+
+  setLocalStorage() {
+    localStorage.setItem('workouts', JSON.stringify(this.#workouts));
+  }
+
+  getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('workouts'));
+    console.log(data);
+    // return data
+
+    if (!data) return;
+
+    this.#workouts = data;
+
+    this.#workouts.forEach(work => {
+      this.#renderWorkout(work);
+    });
+  }
+
+  reset() {
+    localStorage.removeItem('workouts');
+    location.reload();
   }
 }
 
