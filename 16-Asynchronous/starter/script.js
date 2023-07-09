@@ -2,11 +2,16 @@
 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
+const url = 'https://restcountries.com/v3.1/';
 
 // new api url https://countries-api-836d.onrender.com/countries/
 
 ///////////////////////////////////////
-const htmlTemplate = function (languages, currencies, data, className = '') {
+
+const htmlTemplate = function (response, className = '') {
+  const [data] = response;
+  const languages = Object.values(data.languages);
+  const [currencies] = Object.values(data.currencies);
   const html = `
     <article class="country ${className}">
       <img class="country__img" src="${data.flags.png}" />
@@ -19,41 +24,54 @@ const htmlTemplate = function (languages, currencies, data, className = '') {
       </div>
     </article>        
 `;
+  countriesContainer.style.opacity = 1;
   return countriesContainer.insertAdjacentHTML('beforeend', html);
 };
 
 const getCountryAndNeighbour = function (country) {
-  const url = 'https://restcountries.com/v3.1/';
+  // first call
   const request = new XMLHttpRequest();
   request.open('GET', `${url}/name/${country}`);
   request.send();
 
   request.addEventListener('load', function () {
-    // Not calling functions
-    //   console.log(this.responseText); // As request is being the event handler, no need to bind it
     const [data] = JSON.parse(this.responseText);
-    const languages = Object.values(data.languages);
-    const [currencies] = Object.values(data.currencies);
-    console.log(data);
-    // first call
-    htmlTemplate(languages, currencies, data);
+    htmlTemplate(data);
 
     // second call (neighbour)
     const neighbour = data.borders?.[0];
+
     if (!neighbour) return;
+
     const request2 = new XMLHttpRequest();
     request2.open('GET', `${url}/alpha/${neighbour}`);
     request2.send();
     request2.addEventListener('load', function () {
       const [data] = JSON.parse(this.responseText);
-      const languages = Object.values(data.languages);
-      const [currencies] = Object.values(data.currencies);
-      console.log(data);
-      // first call
-      htmlTemplate(languages, currencies, data, 'neighbour');
+      htmlTemplate(data, 'neighbour');
     });
-    countriesContainer.style.opacity = 1;
   });
 };
 
-getCountryAndNeighbour('venezuela');
+// getCountryAndNeighbour('venezuela');
+
+//////////////////////////////////////////////////////
+
+const getCountryFetch = function (country) {
+  fetch(`${url}/name/${country}`)
+    .then(data => data.json())
+    .then(data => {
+      htmlTemplate(data);
+      const neighbour = data[0].borders?.[0];
+
+      if (!neighbour) return;
+
+      // second call
+      return fetch(`${url}/alpha/${neighbour}`);
+    })
+    // chaining promises solves callback hell
+    .then(response => response.json())
+    .then(data => htmlTemplate(data, 'neighbour'));
+};
+
+getCountryFetch('venezuela');
