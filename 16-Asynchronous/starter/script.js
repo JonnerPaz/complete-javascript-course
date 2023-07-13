@@ -8,6 +8,11 @@ const url = 'https://restcountries.com/v3.1/';
 
 ///////////////////////////////////////
 
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  // countriesContainer.style.opacity = 1;
+};
+
 const htmlTemplate = function (response, className = '') {
   const [data] = response;
   const languages = Object.values(data.languages);
@@ -24,11 +29,11 @@ const htmlTemplate = function (response, className = '') {
       </div>
     </article>        
 `;
-  countriesContainer.style.opacity = 1;
+  // countriesContainer.style.opacity = 1;
   return countriesContainer.insertAdjacentHTML('beforeend', html);
 };
 
-const getCountryAndNeighbour = function (country) {
+const getCountryXmlhttp = function (country) {
   // first call
   const request = new XMLHttpRequest();
   request.open('GET', `${url}/name/${country}`);
@@ -57,21 +62,31 @@ const getCountryAndNeighbour = function (country) {
 
 //////////////////////////////////////////////////////
 
+const getJSON = function (url, errorMsg = 'Something went wrong') {
+  return fetch(url).then(response => {
+    if (!response.ok) throw new Error(`${errorMsg}`);
+    return response.json();
+  });
+};
+
 const getCountryFetch = function (country) {
-  fetch(`${url}/name/${country}`)
-    .then(data => data.json())
+  getJSON(`${url}/name/${country}`, 'Country not found')
     .then(data => {
       htmlTemplate(data);
       const neighbour = data[0].borders?.[0];
-
-      if (!neighbour) return;
+      if (!neighbour) throw new Error('No neighbour found');
 
       // second call
-      return fetch(`${url}/alpha/${neighbour}`);
+      return getJSON(`${url}/alpha/${neighbour}`, 'Country not found');
     })
     // chaining promises solves callback hell
-    .then(response => response.json())
-    .then(data => htmlTemplate(data, 'neighbour'));
+    .then(data => htmlTemplate(data, 'neighbour'))
+    .catch(err => renderError(`Something went wrong: ${err}`))
+    .finally(() => (countriesContainer.style.opacity = 1));
 };
 
-getCountryFetch('venezuela');
+// getCountryFetch('venezuela');
+
+btn.addEventListener('click', function () {
+  getCountryFetch('venezuela');
+});
