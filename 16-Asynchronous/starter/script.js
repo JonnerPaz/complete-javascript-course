@@ -8,11 +8,6 @@ const url = 'https://restcountries.com/v3.1/';
 
 ///////////////////////////////////////
 
-const renderError = function (msg) {
-  countriesContainer.insertAdjacentText('beforeend', msg);
-  // countriesContainer.style.opacity = 1;
-};
-
 const htmlTemplate = function (response, className = '') {
   const [data] = response;
   const languages = Object.values(data.languages);
@@ -62,6 +57,11 @@ const getCountryXmlhttp = function (country) {
 
 //////////////////////////////////////////////////////
 
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  // countriesContainer.style.opacity = 1;
+};
+
 const getJSON = function (url, errorMsg = 'Something went wrong') {
   return fetch(url).then(response => {
     if (!response.ok) throw new Error(`${errorMsg}`);
@@ -90,3 +90,43 @@ const getCountryFetch = function (country) {
 btn.addEventListener('click', function () {
   getCountryFetch('venezuela');
 });
+
+// creating promises manually
+const lotteryPromise = new Promise(function (resolve, reject) {
+  console.log('Lottery draw is happening...');
+  setTimeout(function () {
+    const random = Math.random();
+    // console.log(random);
+    if (random >= 0.5) {
+      resolve('You win');
+    } else {
+      reject(new Error('You lost your money'));
+    }
+  }, 2000);
+});
+
+lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
+
+// Promisifying setTimeout
+const wait = function (seconds) {
+  return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+};
+
+wait(1)
+  .then(() => {
+    console.log('I waited for 1 second');
+    return wait(1);
+  })
+  .then(() => {
+    console.log('I waited for 2 seconds');
+    return wait(1);
+  })
+  .then(() => {
+    console.log('I waited for 3 seconds');
+  });
+
+console.log(Navigator);
+navigator.geolocation.getCurrentPosition(
+  position => console.log(position),
+  err => console.log(err)
+);
