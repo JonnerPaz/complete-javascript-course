@@ -87,12 +87,12 @@ const getCountryFetch = function (country) {
 
 // getCountryFetch('venezuela');
 
-btn.addEventListener('click', function () {
-  getCountryFetch('venezuela');
-});
+// btn.addEventListener('click', function () {
+//   getCountryFetch('venezuela');
+// });
 
 // creating promises manually
-const lotteryPromise = new Promise(function (resolve, reject) {
+/* const lotteryPromise = new Promise(function (resolve, reject) {
   console.log('Lottery draw is happening...');
   setTimeout(function () {
     const random = Math.random();
@@ -103,16 +103,16 @@ const lotteryPromise = new Promise(function (resolve, reject) {
       reject(new Error('You lost your money'));
     }
   }, 2000);
-});
+}); */
 
-lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
+// lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
 
 // Promisifying setTimeout
 const wait = function (seconds) {
   return new Promise(resolve => setTimeout(resolve, seconds * 1000));
 };
 
-wait(1)
+/* wait(1)
   .then(() => {
     console.log('I waited for 1 second');
     return wait(1);
@@ -123,10 +123,20 @@ wait(1)
   })
   .then(() => {
     console.log('I waited for 3 seconds');
-  });
+  }); */
 
-console.log(Navigator);
-navigator.geolocation.getCurrentPosition(
-  position => console.log(position),
-  err => console.log(err)
-);
+// Promisifying geolocation api
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    /* navigator.geolocation.getCurrentPosition(
+      position => resolve(position),
+      err => reject(new Error(err))
+    ); */
+
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+/* getPosition()
+  .then(pos => console.log(pos))
+  .catch(pos => console.error(pos)); */
