@@ -128,6 +128,7 @@ const wait = function (seconds) {
 // Promisifying geolocation api
 const getPosition = function () {
   return new Promise(function (resolve, reject) {
+    // One way to do it
     /* navigator.geolocation.getCurrentPosition(
       position => resolve(position),
       err => reject(new Error(err))
