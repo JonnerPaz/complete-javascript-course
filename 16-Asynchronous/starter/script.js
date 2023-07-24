@@ -141,3 +141,108 @@ const getPosition = function () {
 /* getPosition()
   .then(pos => console.log(pos))
   .catch(pos => console.error(pos)); */
+
+const promis = new Promise((resolve, reject) => resolve('hola'));
+
+// Async functions
+
+const whereAmI2 = async function () {
+  try {
+    // Getting position
+    const position = await getPosition();
+    const { latitude: lat, longitude: lng } = position.coords;
+    console.log(lat, lng);
+
+    // Reverse geocoding
+    const apiGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+    if (!apiGeo.ok) throw new Error('Problem getting location country');
+    const dataGeo = await apiGeo.json();
+
+    // Resolving data
+    const res = await fetch(`${url}/name/${dataGeo.country}`);
+    if (!res.ok) throw new Error('Problem getting country');
+    const data = await res.json();
+    htmlTemplate(data);
+    countriesContainer.style.opacity = 1;
+    // Same as above. Async - await are syntax suggar
+    // fetch(`${url}/name/${country}`).then(res => console.log(res));
+    return 'helol';
+  } catch (err) {
+    renderError(`There was an error: ${err}`);
+    // Reject promise returned from async function
+    throw err;
+  }
+};
+
+// Old way
+/* whereAmI2()
+  .then(lol => console.log(lol))
+  .catch(err => console.error(err)); */
+
+// new way
+/* (async function () {
+  try {
+    const executer = await whereAmI2();
+    console.log(executer);
+  } catch (err) {
+    console.error(err);
+  }
+})(); */
+
+const get3Countries = async function (c1, c2, c3) {
+  try {
+    /* const [data1] = await getJSON(`${url}/name/${c1}`);
+    const [data2] = await getJSON(`${url}/name/${c2}`);
+    const [data3] = await getJSON(`${url}/name/${c3}`); */
+
+    // This way all request will run on parallel. receives and returns and array
+    // If 1 of the promises rejects, all of them will reject as well
+    const data = await Promise.all([
+      getJSON(`${url}/name/${c1}`),
+      getJSON(`${url}/name/${c2}`),
+      getJSON(`${url}/name/${c3}`),
+    ]);
+    console.log(data.flatMap(country => country[0].capital));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// get3Countries('venezuela', 'peru', 'Brazil');
+
+// Settle as soons as 1 of the request settles. Like Array.any
+(async function () {
+  // You only get an arr of 1 element of the following, not all of them
+  const res = await Promise.race([
+    getJSON(`${url}/name/italy`),
+    getJSON(`${url}/name/venezuela`),
+    getJSON(`${url}/name/argentina`),
+  ]);
+  console.log(res[0]);
+});
+
+const timeout = function (s) {
+  return new Promise(function (_, reject) {
+    setTimeout(() => {
+      reject(new Error('Request took to long'));
+    }, s * 1000);
+  });
+};
+
+/* Promise.race([getJSON(`${url}/name/argentina`), timeout(5)])
+  .then(res => console.log(res))
+  .catch(err => console.error(err)); */
+
+// Promise.allSettled
+Promise.allSettled([
+  Promise.resolve('1'),
+  Promise.reject('2'),
+  Promise.resolve('3'),
+]).then(c => console.log(c));
+
+// Promise.any
+Promise.any([
+  Promise.resolve('1'),
+  Promise.reject('2'),
+  Promise.resolve('3'),
+]).then(c => console.log(c));
