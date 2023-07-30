@@ -2,7 +2,8 @@
 
 console.log('Importing module');
 // import cloneDeep from './node_modules/lodash-es/cloneDeep.js';
-import { cloneDeep } from 'lodash-es';
+// import './node_modules/core-js/stable';
+// import { cloneDeep } from './node_modules/lodash-es';
 import {
   addToCart,
   totalPrice as price, // this changes the way it is called on this file
@@ -35,16 +36,16 @@ const state = {
 };
 
 const stateClone = Object.assign({}, state);
-const stateCloneDeep = cloneDeep(state);
+// const stateCloneDeep = cloneDeep(state);
 state.user.loggedIn = false;
 console.log(state); // false
 console.log(stateClone); // false
-console.log(stateCloneDeep); // true
+// console.log(stateCloneDeep); // true
 
 // Hot reload to parcel
-if (module.hot) {
-  module.hot.accept();
-}
+// if (module.hot) {
+//   module.hot.accept();
+// }
 
 class Etc {
   #greeting = 'hey';
@@ -55,5 +56,3 @@ class Etc {
 }
 
 const jonner = new Etc('Jonner');
-
-import 'core-js/stable';
