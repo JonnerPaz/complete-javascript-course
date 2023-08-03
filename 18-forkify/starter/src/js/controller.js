@@ -30,11 +30,12 @@ const renderSpinner = parentEl => {
   parentEl.insertAdjacentHTML('afterbegin', html);
 };
 
-const showRecipe = async function (url) {
+const showRecipe = async function () {
   // 1) loading recipe
   try {
+    const id = window.location.hash; // changes hash, changes ingredient id
     renderSpinner(recipeContainer);
-    const res = await fetch(url);
+    const res = await fetch(`${url}/${id.slice(1)}`); // slice hash
     const data = await res.json();
 
     if (!res.ok)
@@ -155,7 +156,8 @@ const showRecipe = async function (url) {
     recipeContainer.innerHTML = '';
     recipeContainer.insertAdjacentHTML('afterbegin', html);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
-showRecipe(`${url}/5ed6604591c37cdc054bc886`);
+
+['hashchange', 'load'].forEach(e => window.addEventListener(e, showRecipe));

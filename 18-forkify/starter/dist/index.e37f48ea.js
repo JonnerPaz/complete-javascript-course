@@ -602,11 +602,12 @@ const renderSpinner = (parentEl)=>{
     parentEl.innerHTML = "";
     parentEl.insertAdjacentHTML("afterbegin", html);
 };
-const showRecipe = async function(url) {
+const showRecipe = async function() {
     // 1) loading recipe
     try {
+        const id = window.location.hash; // changes hash, changes ingredient id
         renderSpinner(recipeContainer);
-        const res = await fetch(url);
+        const res = await fetch(`${url}/${id.slice(1)}`); // slice hash
         const data = await res.json();
         if (!res.ok) throw new Error(`Connection Failed: ${data.message} (${res.status})`);
         let { recipe } = data.data;
@@ -712,10 +713,13 @@ const showRecipe = async function(url) {
         recipeContainer.innerHTML = "";
         recipeContainer.insertAdjacentHTML("afterbegin", html);
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
-showRecipe(`${url}/5ed6604591c37cdc054bc886`);
+[
+    "hashchange",
+    "load"
+].forEach((e)=>window.addEventListener(e, showRecipe));
 
 },{"url:../img/icons.svg":"loVOp","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ"}],"loVOp":[function(require,module,exports) {
 module.exports = require("9bcc84ee5d265e38").getBundleURL("hWUTQ") + "icons.dfd7a6db.svg" + "?" + Date.now();
