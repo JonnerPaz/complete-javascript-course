@@ -1,16 +1,13 @@
+import { API_URL } from './config';
+import { getJSON } from './views/helpers';
+
 export const state = {
   recipe: {},
 };
 
-export const loadRecipe = async function (url, id) {
+export const loadRecipe = async function (id) {
   try {
-    const res = await fetch(`${url}/${id.slice(1)}`); // slice hash
-    console.log('heheheh');
-    const data = await res.json();
-
-    if (!res.ok)
-      throw new Error(`Connection Failed: ${data.message} (${res.status})`);
-
+    const data = await getJSON(`${API_URL}/${id.slice(1)}`);
     const { recipe } = data.data;
 
     // This will override recipe var with data from fetch
@@ -26,6 +23,6 @@ export const loadRecipe = async function (url, id) {
     };
     console.log(state.recipe);
   } catch (err) {
-    console.error(err);
+    console.error(`${err}`);
   }
 };
