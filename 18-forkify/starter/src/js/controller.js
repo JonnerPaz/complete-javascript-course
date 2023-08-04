@@ -12,7 +12,7 @@ const recipeContainer = document.querySelector('.recipe');
 const controlRecipes = async function () {
   try {
     const id = window.location.hash; // changes hash, changes ingredient id
-    if (!id) return; // guard clause
+    if (!id) return;
     recipeView.renderSpinner();
 
     // 1) loading recipe
@@ -22,7 +22,12 @@ const controlRecipes = async function () {
     recipeView.render(model.state.recipe);
   } catch (err) {
     console.error(err);
+    recipeView.renderError();
   }
 };
 
-['hashchange', 'load'].forEach(e => window.addEventListener(e, controlRecipes));
+const init = function () {
+  recipeView.addHandlerRender(controlRecipes);
+};
+
+init();
