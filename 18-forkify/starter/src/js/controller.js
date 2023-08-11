@@ -24,6 +24,9 @@ const controlRecipes = async function () {
     console.error(err);
     recipeView.renderError();
   }
+
+  // TEST
+  // controlServings();
 };
 
 // Executes each time the search bar is pressed
@@ -34,7 +37,7 @@ const controlSearchResults = async function () {
 
     await model.loadSearchResults(query);
 
-    resultsView.render(model.getSearchResultPage(4));
+    resultsView.render(model.getSearchResultPage());
 
     // render pagination btns
     paginationView.render(model.state.search);
@@ -50,8 +53,18 @@ const controlPagination = function (goToPage) {
   // Render new pagination btns
   paginationView.render(model.state.search);
 };
+
+const controlServings = function (newServings) {
+  // update the recipe servings (in state)
+  model.updateServings(newServings);
+
+  // Update the view
+  recipeView.render(model.state.recipe);
+};
+
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
+  recipeView.addHandlerUpdateServings(controlServings);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
 };
