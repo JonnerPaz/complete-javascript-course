@@ -1,5 +1,5 @@
 import View from './view';
-import icons from 'url:../../img/icons.svg';
+// import icons from 'url:../../img/icons.svg';
 
 class resultsView extends View {
   _parentElement = document.querySelector('.results');
@@ -7,7 +7,7 @@ class resultsView extends View {
   _message = '';
 
   _generateHtml() {
-    console.log(this._data);
+    // console.log(this._data);
     return this._data.map(this._generateHtmlPreview).join('');
   }
 
